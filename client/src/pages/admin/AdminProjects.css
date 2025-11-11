@@ -1,0 +1,39 @@
+.admin-projects {
+  padding: 40px 0;
+  min-height: calc(100vh - 70px);
+  background: var(--bg-secondary);
+  transition: background 0.3s ease;
+}
+
+/* Projects manager using login-card visual language */
+.projects-card { max-width: 1100px; margin: 0 auto 40px }
+.login-card { width: 100%; display:flex; border-radius:14px; overflow:hidden; box-shadow: 0 10px 40px rgba(2,6,23,0.45); border:1px solid rgba(255,255,255,0.04); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.card-side { padding:28px; flex:1 1 50% }
+.card-side--brand { background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.04)); color: var(--text-primary); display:flex; align-items:center; justify-content:center }
+.brand-inner { text-align:center }
+.brand-inner h2 { margin:8px 0 6px }
+.brand-inner .muted { opacity:0.9; color:var(--text-muted) }
+
+.card-side--form { background: var(--bg-primary) }
+.card-title { font-size:18px; font-weight:700; color:var(--text-primary); margin-bottom:12px }
+
+.form { max-width:640px; margin:0 auto }
+.input-group { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+.input { flex:1; padding:12px; border-radius:10px; border:1px solid rgba(100,100,120,0.06); background: rgba(255,255,255,0.02); color: var(--text-primary); outline:none }
+.input:focus { box-shadow: 0 6px 18px rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.3); }
+
+.project-form { padding:0; box-shadow:none; border:none }
+.projects-list { padding:0; border:none }
+.projects-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px }
+.project-card { border-radius:12px; overflow:hidden; background: var(--bg-secondary); border:1px solid rgba(255,255,255,0.02); transition: transform .18s ease, box-shadow .18s ease }
+.project-card:hover { transform: translateY(-6px); box-shadow: 0 12px 36px rgba(2,6,23,0.06); }
+.project-card img { width:100%; height:180px; object-fit:cover }
+.project-info { padding:14px }
+.project-info h3 { margin:0 0 8px; color:var(--text-primary) }
+.project-category { color:var(--text-secondary); margin-bottom:10px }
+.project-actions { display:flex; gap:8px }
+.btn-sm { padding:6px 12px; font-size:14px }
+.current-image { margin-top:5px; font-size:12px; color:var(--text-secondary) }
+
+@media (max-width: 800px) { .login-card { flex-direction:column } .card-side--brand { display:none } }
+

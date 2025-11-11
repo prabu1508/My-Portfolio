@@ -1,0 +1,41 @@
+.admin-contact { padding: 36px 0; min-height: calc(100vh - 70px); background: var(--bg-secondary); }
+
+.contact-card { max-width:1100px; margin:0 auto 40px }
+
+.login-card { width: 100%; display:flex; border-radius:14px; overflow:hidden; box-shadow: 0 10px 40px rgba(2,6,23,0.45); border:1px solid rgba(255,255,255,0.04); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.card-side { padding:28px; flex:1 1 50% }
+.card-side--brand { background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(16,185,129,0.04)); color: var(--text-primary); display:flex; align-items:center; justify-content:center }
+.brand-inner { text-align:center }
+.brand-inner h2 { margin:8px 0 6px }
+.brand-sub { color:var(--text-muted); font-size:14px }
+
+.card-side--form { background: var(--bg-primary) }
+.form { max-width:680px; margin:0 auto }
+
+.contact-filters { display:flex; gap:10px; justify-content:center }
+.filter-btn { padding:8px 18px; border:2px solid var(--primary-color); background:var(--bg-primary); color:var(--primary-color); border-radius:20px; font-weight:500; transition:all 0.2s }
+.filter-btn:hover { background:var(--bg-secondary) }
+.filter-btn.active { background:var(--gradient-primary); color:white; border-color:transparent }
+
+.contacts-list { padding:0; border:none }
+.contacts-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:14px; margin-top:8px }
+
+.contact-card { border: 1px solid rgba(255,255,255,0.03); border-radius:12px; padding:16px; background:var(--bg-secondary); transition: transform 0.25s ease, box-shadow 0.25s ease }
+.contact-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: rgba(99,102,241,0.14) }
+.contact-card.unread { border-left:4px solid rgba(99,102,241,0.14); background: var(--bg-tertiary) }
+
+.contact-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px }
+.contact-header h3 { margin:0 0 6px 0; color:var(--text-primary); font-size:16px }
+.contact-email { color:var(--text-secondary); font-size:13px; margin:0 }
+.unread-badge { background:var(--gradient-primary); color:white; padding:4px 10px; border-radius:10px; font-size:12px; font-weight:600 }
+
+.contact-subject { font-weight:600; margin-bottom:8px; color:var(--text-primary) }
+.contact-message { color:var(--text-secondary); line-height:1.5; margin-bottom:12px; padding:12px; background:var(--bg-tertiary); border-radius:10px }
+
+.contact-footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px }
+.contact-date { color:var(--text-secondary); font-size:12px }
+.contact-actions { display:flex; gap:8px }
+
+@media (max-width: 880px) { .login-card { flex-direction:column } .card-side--brand { display:none } }
+
+

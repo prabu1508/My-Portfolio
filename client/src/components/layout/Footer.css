@@ -1,0 +1,31 @@
+.footer {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: #fff;
+  text-align: center;
+  padding: 40px 0;
+  margin-top: 80px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+.dark-mode .footer {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gradient-primary);
+}
+
+.footer p {
+  opacity: 0.9;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
