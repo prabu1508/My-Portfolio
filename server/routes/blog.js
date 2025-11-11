@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const BlogPost = require('../models/BlogPost');
 const auth = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload, uploadToCloudinary } = require('../middleware/upload');
 const fs = require('fs');
 const path = require('path');
 
@@ -81,8 +81,10 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
       }
     }
 
+    // ✅ Upload image to Cloudinary if provided
     if (req.file) {
-      postData.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file.buffer);
+      postData.image = result.secure_url;
     }
 
     const post = new BlogPost(postData);
@@ -121,15 +123,10 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
       }
     }
 
+    // ✅ Upload new image to Cloudinary if provided
     if (req.file) {
-      // Delete old image if exists
-      if (post.image) {
-        const oldImagePath = path.join(__dirname, '..', post.image);
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      }
-      post.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file.buffer);
+      post.image = result.secure_url;
     }
 
     await post.save();

@@ -11,12 +11,20 @@
     "install-server": "cd server && npm install",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install"
   },
-  "keywords": ["portfolio", "mern", "react", "nodejs"],
+  "keywords": [
+    "portfolio",
+    "mern",
+    "react",
+    "nodejs"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2",
     "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "cloudinary": "^2.8.0",
+    "multer": "^2.0.2"
   }
 }
-

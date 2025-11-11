@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
 const auth = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload, uploadToCloudinary } = require('../middleware/upload'); // ✅ FIXED
 const fs = require('fs');
 const path = require('path');
 
@@ -52,19 +52,19 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 
     if (technologies) {
       try {
-        // Try parsing as JSON first (in case it's stringified)
         const parsed = typeof technologies === 'string' ? JSON.parse(technologies) : technologies;
         projectData.technologies = Array.isArray(parsed) 
           ? parsed 
           : technologies.split(',').map(t => t.trim());
       } catch {
-        // If not JSON, treat as comma-separated string
         projectData.technologies = technologies.split(',').map(t => t.trim());
       }
     }
 
+    // ✅ Upload image to Cloudinary
     if (req.file) {
-      projectData.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file.buffer);
+      projectData.image = result.secure_url; // ✅ Cloudinary URL stored
     }
 
     const project = new Project(projectData);
@@ -94,26 +94,19 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
 
     if (technologies) {
       try {
-        // Try parsing as JSON first (in case it's stringified)
         const parsed = typeof technologies === 'string' ? JSON.parse(technologies) : technologies;
         project.technologies = Array.isArray(parsed) 
           ? parsed 
           : technologies.split(',').map(t => t.trim());
       } catch {
-        // If not JSON, treat as comma-separated string
         project.technologies = technologies.split(',').map(t => t.trim());
       }
     }
 
+    // ✅ Upload new image to Cloudinary if provided
     if (req.file) {
-      // Delete old image if exists
-      if (project.image) {
-        const oldImagePath = path.join(__dirname, '..', project.image);
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      }
-      project.image = `/uploads/${req.file.filename}`;
+      const result = await uploadToCloudinary(req.file.buffer);
+      project.image = result.secure_url; // ✅ Replace old URL
     }
 
     await project.save();
@@ -131,14 +124,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    // Delete associated image
-    if (project.image) {
-      const imagePath = path.join(__dirname, '..', project.image);
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
-    }
-
+    // ✅ No local fs delete needed (Cloudinary handles storage)
     await Project.findByIdAndDelete(req.params.id);
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
@@ -147,4 +133,3 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 module.exports = router;
-

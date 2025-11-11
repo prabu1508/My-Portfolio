@@ -36,5 +36,7 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// When running on Vercel/serverless, we export the app as a handler instead of listening.
+// Local development (e.g., `npm run dev`) can still use a separate entry that calls app.listen.
+module.exports = app;
 

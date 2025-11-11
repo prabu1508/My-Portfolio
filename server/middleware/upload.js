@@ -1,71 +1,27 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
-// optional: sharp for image processing
-let sharp;
-try { sharp = require('sharp'); } catch (e) { sharp = null; }
+const multer = require("multer");
+const { v2: cloudinary } = require("cloudinary");
+const streamifier = require("streamifier");
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function (req, file, cb) {
-    // create a secure random filename, preserve extension
-    const ext = path.extname(file.originalname).toLowerCase();
-    const name = crypto.randomBytes(12).toString('hex');
-    cb(null, `${name}${ext}`);
-  }
+// ✅ Cloudinary config (must match your .env)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
 });
 
-const fileFilter = (req, file, cb) => {
-  // Accept images and common document types (PDF, Word) for resume uploads
-  const allowedImage = file.mimetype.startsWith('image/');
-  const allowedDocs = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ].includes(file.mimetype);
+// ✅ Use memory storage (no /uploads folder, no fs)
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-  if (allowedImage || allowedDocs) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image or document files are allowed!'), false);
-  }
-};
+// ✅ Upload buffer stream directly to Cloudinary
+const uploadToCloudinary = (fileBuffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream((error, result) => {
+      if (error) return reject(error);
+      resolve(result);
+    });
 
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
-  },
-  fileFilter: fileFilter
-});
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
 
-module.exports = upload;
-
-// Helper: generate thumbnail for uploaded image (async). Requires sharp.
-module.exports.generateThumbnail = async (filepath, size = 200) => {
-  if (!sharp) return null;
-  try {
-    const ext = path.extname(filepath);
-    const dir = path.dirname(filepath);
-    const base = path.basename(filepath, ext);
-    const thumbName = `${base}-thumb${ext}`;
-    const thumbPath = path.join(dir, thumbName);
-    await sharp(filepath).resize(size, size, { fit: 'cover' }).toFile(thumbPath);
-    return thumbPath;
-  } catch (err) {
-    console.error('Error generating thumbnail:', err.message);
-    return null;
-  }
-};
-
-module.exports.uploadsDir = uploadsDir;
-
+module.exports = { upload, uploadToCloudinary };
